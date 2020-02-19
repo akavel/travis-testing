@@ -44,17 +44,19 @@ jobs:
       env:
         - OPERATOR_SDK_VERSION=v0.8.1 KUBE_VERSION=v1.14.2 MINIKUBE_VERSION=v1.6.2 SHFMT_VERSION=v3.0.1
       script: echo "master branch release kube version $KUBE_VERSION"
+      if: type = push AND branch = master # AND fork = false
     - stage: deploy-release
       env:
         - OPERATOR_SDK_VERSION=v0.8.1 KUBE_VERSION=v1.14.2 MINIKUBE_VERSION=v1.6.2 SHFMT_VERSION=v3.0.1
       script: echo "tag release kube version $KUBE_VERSION"
+      if: tag =~ /^v\d+\.\d+\.\d+$/ # AND fork = false
 
-stages:
-  - test
-  - name: deploy
-    if: type = push AND branch = master ANd fork = false
-  - name: deploy-release
-    if: tag =~ /^v\d+\.\d+\.\d+$/ AND fork = false
+# stages:
+#   - test
+#   - name: deploy
+#     if: type = push AND branch = master # AND fork = false
+#   - name: deploy-release
+#     if: tag =~ /^v\d+\.\d+\.\d+$/ # AND fork = false
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
